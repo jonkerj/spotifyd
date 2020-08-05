@@ -75,8 +75,9 @@ jobs:
           echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ bionic main" | sudo tee -a /etc/apt/sources.list
           sudo apt-get update
           sudo apt-get install -y -qq gcc-aarch64-linux-gnu libc6-arm64-cross libc6-dev-arm64-cross
-          sudo apt-get download libasound2:arm64 libasound2-dev:arm64 libssl-dev:arm64 libssl1.1:arm64
+          sudo apt-get download libasound2:arm64 libasound2-dev:arm64 libdbus-1-dev:arm64 libssl-dev:arm64 libssl1.1:arm64
           sudo dpkg -x libasound2_*.deb /build/sysroot/
+          sudo dpkg -x libdbus-1-dev_*.deb /build/sysroot/
           sudo dpkg -x libssl-dev*.deb /build/sysroot/
           sudo dpkg -x libssl1.1*.deb /build/sysroot/
           sudo dpkg -x libasound2-dev*.deb /build/sysroot/
