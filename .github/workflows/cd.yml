@@ -75,17 +75,27 @@ jobs:
           echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ bionic main" | sudo tee -a /etc/apt/sources.list
           sudo apt-get update
           sudo apt-get install -y -qq gcc-aarch64-linux-gnu libc6-arm64-cross libc6-dev-arm64-cross
-          sudo apt-get download libasound2:arm64 libasound2-dev:arm64 libdbus-1-dev:arm64 libssl-dev:arm64 libssl1.1:arm64
+          sudo apt-get download libasound2-dev:arm64 libasound2:arm64 libdbus-1-dev:arm64 libgcrypt20:arm64 libgpg-error0:arm64 liblz4-1:arm64 liblzma5:arm64 libssl-dev:arm64 libssl1.1:arm64 libsystemd0:arm64
+          sudo dpkg -x libasound2-dev_*.deb /build/sysroot/
           sudo dpkg -x libasound2_*.deb /build/sysroot/
           sudo dpkg -x libdbus-1-dev_*.deb /build/sysroot/
-          sudo dpkg -x libssl-dev*.deb /build/sysroot/
-          sudo dpkg -x libssl1.1*.deb /build/sysroot/
-          sudo dpkg -x libasound2-dev*.deb /build/sysroot/
+          sudo dpkg -x libgcrypt20_*.deb /build/sysroot/
+          sudo dpkg -x libgpg-error0_*.deb /build/sysroot/
+          sudo dpkg -x liblz4-1_*.deb /build/sysroot/
+          sudo dpkg -x liblzma5_*.deb /build/sysroot/
+          sudo dpkg -x libssl-dev_*.deb /build/sysroot/
+          sudo dpkg -x libssl1.1_*.deb /build/sysroot/
+          sudo dpkg -x libsystemd0_*.deb /build/sysroot/
           echo "::set-env name=PKG_CONFIG_ALLOW_CROSS::1"
           echo "::set-env name=RUSTFLAGS::-C linker=aarch64-linux-gnu-gcc -L/usr/aarch64-linux-gnu/lib/ -L/build/sysroot/usr/lib/aarch64-linux-gnu/ -L/build/sysroot/lib/aarch64-linux-gnu/"
           echo "::set-env name=C_INCLUDE_PATH::/build/sysroot/usr/include"
           echo "::set-env name=OPENSSL_LIB_DIR::/build/sysroot/usr/lib/aarch64-linux-gnu"
           echo "::set-env name=OPENSSL_INCLUDE_DIR::/build/sysroot/usr/include/aarch64-linux-gnu"
+          echo -e '[target.aarch64-unknown-linux-gnueabihf.dbus]\nrustc-link-lib = ["dbus-1", "gcrypt", "gpg-error", "lz4", "lzma", "systemd"]' | sudo tee -a /usr/share/rust/.cargo/config
+          sudo ln -s liblz4.so.1 /build/sysroot/usr/lib/aarch64-linux-gnu/liblz4.so
+          sudo ln -s libgcrypt.so.20 /build/sysroot/lib/aarch64-linux-gnu/libgcrypt.so
+          sudo ln -s libgpg-error.so.0 /build/sysroot/lib/aarch64-linux-gnu/libgpg-error.so
+          sudo ln -s liblzma.so.5 /build/sysroot/lib/aarch64-linux-gnu/liblzma.so
       - name: Installing needed Ubuntu armhf dependencies
         if: matrix.os == 'ubuntu-18.04' && matrix.build_target == 'linux-armhf'
         run: |
